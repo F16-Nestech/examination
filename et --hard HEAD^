@@ -1,0 +1,29 @@
+[33mcommit 8b95acf4821932bb4342b27bbdb15d9f0f8107a4[m[33m ([m[1;36mHEAD -> [m[1;32mthach-first-branch[m[33m, [m[1;31morigin/thach-first-branch[m[33m)[m
+Author: thachaprochem <thachaprochem@gmail.com>
+Date:   Mon Nov 13 19:07:36 2023 +0700
+
+    thêm phần admin-login và mã hóa password và token
+
+[33mcommit 349c876c7bfa29fd2540875d4332f195ebdff972[m
+Author: thachaprochem <thachaprochem@gmail.com>
+Date:   Wed Nov 8 08:24:43 2023 +0700
+
+    tao lap cac Schema
+
+[33mcommit 7268162cb999f668dd85c3318b2a0e7f7121b28d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: thachaprochem <thachaprochem@gmail.com>
+Date:   Tue Oct 31 22:53:33 2023 +0700
+
+    thu lai lan nua xem sao
+
+[33mcommit 03be6fffae3dff8da829b91da1cf51ba706fb240[m
+Author: thachaprochem <thachaprochem@gmail.com>
+Date:   Tue Oct 31 22:42:41 2023 +0700
+
+    Thach gui len test.txt
+
+[33mcommit fc6c473f10c26c9fd99ef036716579c0eedd9607[m
+Author: AFK <54306497+affkjuhyt@users.noreply.github.com>
+Date:   Mon Oct 30 20:53:18 2023 +0700
+
+    Initial commit
