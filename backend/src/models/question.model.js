@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import subject from '../config/subject.js';
 
 const questionSchema = mongoose.Schema(
   {
@@ -8,20 +9,7 @@ const questionSchema = mongoose.Schema(
     },
     subject: {
       type: String,
-      enum: [
-        'maths',
-        'physics',
-        'chemistry',
-        'biology',
-        'english',
-        'literature',
-        'history',
-        'geography',
-        'it',
-        'natural science',
-        'social science',
-        'other',
-      ],
+      enum: Object.values(subject),
     },
     grade: {
       type: Number,

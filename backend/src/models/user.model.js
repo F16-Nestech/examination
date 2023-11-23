@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import subject from '../config/subject.js';
+import { userRoles } from '../config/user.js';
 
 const userTestRecord = mongoose.Schema({
   test_id: {
@@ -33,25 +35,12 @@ const userSchema = mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['teacher', 'student', 'admin'],
+    enum: Object.values(userRoles),
     required: [true, 'Please provide role'],
   },
   subject: {
     type: String,
-    enum: [
-      'maths',
-      'physics',
-      'chemistry',
-      'biology',
-      'english',
-      'literature',
-      'history',
-      'geography',
-      'it',
-      'natural science',
-      'social science',
-      'other',
-    ],
+    enum: Object.values(subject),
   },
   class_ids: {
     type: [mongoose.Types.ObjectId],
