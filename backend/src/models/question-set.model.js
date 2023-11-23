@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import subject from '../config/subject.js';
 
 const QuestionSetSchema = mongoose.Schema(
   {
@@ -13,20 +14,7 @@ const QuestionSetSchema = mongoose.Schema(
     },
     subject: {
       type: String,
-      enum: [
-        'maths',
-        'physics',
-        'chemistry',
-        'biology',
-        'english',
-        'literature',
-        'history',
-        'geography',
-        'it',
-        'natural science',
-        'social science',
-        'other',
-      ],
+      enum: Object.values(subject),
       required: [true, 'Please provide subject'],
     },
     description: {

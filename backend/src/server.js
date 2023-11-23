@@ -1,11 +1,18 @@
+import config from './config/config.js';
 import app from './app.js';
 import connectDB from './config/db.js';
 import logger from './config/logger.js';
+import authRoute from './routes/auth.route.js';
+import userRoute from './routes/user.route.js';
 
-const serverPort = 3000;
+const serverPort = config.server.port || 3000;
 
 // Connect database
 connectDB();
+
+// Add route
+app.use('/v1/auth', authRoute);
+app.use('/v1/users', userRoute);
 
 // Listen port
 const server = app.listen(serverPort, () => {
