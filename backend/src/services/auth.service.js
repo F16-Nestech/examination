@@ -64,6 +64,17 @@ export const generateAuthTokens = async (user) => {
   };
 };
 
+export const generateAccessTokens = async (id) => {
+  const accessTokenExpires = moment().add(
+    config.jwt.accessExpirationMinutes,
+    'minutes'
+  );
+
+  const accessToken = generateToken(id, accessTokenExpires, tokenTypes.ACCESS);
+
+  return accessToken;
+};
+
 const checkPassword = async (user, password) => {
   try {
     const result = await bcrypt.compare(password, user.password);
@@ -107,7 +118,6 @@ export const login = async (username, password) => {
 
   const tokens = await generateAuthTokens(user);
 
-  // user.password = undefined;
   delete user._doc.password;
 
   return {

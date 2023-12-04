@@ -1,9 +1,10 @@
 import express from 'express';
-import { login } from '../controllers/auth.controller.js';
+import { login, refreshToken } from '../controllers/auth.controller.js';
 
 const authRoute = express.Router();
 
 // API
 authRoute.post('/login', login);
+authRoute.post('/refresh', refreshToken);
 
 export default authRoute;

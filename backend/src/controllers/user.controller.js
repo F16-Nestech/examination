@@ -133,8 +133,7 @@ export const updateUserPassword = async (req, res) => {
   const id = req.params.id;
 
   if (req.user._id == id) {
-    // check password match: req.body.current_password and hash password
-    console.log(req.body.current_password, req.user.password);
+    // check password match
     const isPasswordMatch = bcrypt.compareSync(
       req.body.current_password,
       req.user.password

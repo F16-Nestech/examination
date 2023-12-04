@@ -1,5 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
-import { login as userLogin } from '../services/auth.service.js';
+import {
+  login as userLogin,
+  generateAccessTokens,
+} from '../services/auth.service.js';
+import Token from '../models/token.model.js';
 
 export const login = async (req, res) => {
   const { username, password } = req.body;
@@ -22,4 +26,39 @@ export const login = async (req, res) => {
     user,
     tokens,
   });
+};
+
+export const refreshToken = async (req, res) => {
+  // Get token
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+
+  try {
+    const doc = Token.findOne({ token: token });
+    if (!doc) {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        type: 'Error',
+        message: 'Refresh token not found',
+      });
+    }
+    if (doc.expires < Date.now()) {
+      Token.deleteOne({ token });
+      return res.status(StatusCodes.FORBIDDEN).json({
+        type: 'Error',
+        message: 'Refresh token expired',
+      });
+    }
+
+    const accessToken = generateAccessTokens(doc.user_id);
+    return res.status(StatusCodes.OK).json({
+      type: 'Error',
+      message: 'Generate access token success',
+      accessToken,
+    });
+  } catch (e) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      type: 'Error',
+      message: err.message,
+    });
+  }
 };
