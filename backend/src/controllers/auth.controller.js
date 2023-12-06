@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+import responseTypes from '../config/responseType.js';
 import {
   login as userLogin,
   generateAccessTokens,
@@ -37,27 +38,27 @@ export const refreshToken = async (req, res) => {
     const doc = Token.findOne({ token: token });
     if (!doc) {
       return res.status(StatusCodes.FORBIDDEN).json({
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'Refresh token not found',
       });
     }
     if (doc.expires < Date.now()) {
       Token.deleteOne({ token });
       return res.status(StatusCodes.FORBIDDEN).json({
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'Refresh token expired',
       });
     }
 
     const accessToken = generateAccessTokens(doc.user_id);
     return res.status(StatusCodes.OK).json({
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: 'Generate access token success',
       accessToken,
     });
   } catch (e) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: err.message,
     });
   }

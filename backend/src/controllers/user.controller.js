@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
+import responseTypes from '../config/responseType.js';
 import {
   queryAllUsers,
   createNewUser,
@@ -61,7 +62,7 @@ export const updateUserById = async (req, res) => {
     const user = await User.findById(id);
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'User not found',
       });
     }
@@ -69,7 +70,7 @@ export const updateUserById = async (req, res) => {
     // same role, different id
     if (req.user.role === user.role && req.user._id != id) {
       return res.status(StatusCodes.FORBIDDEN).json({
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'You can not change password of other users',
       });
     }
@@ -78,7 +79,7 @@ export const updateUserById = async (req, res) => {
     if (req.user._id == id) {
       if (req.body.subject && !isSubjectValid(req.body.subject)) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          type: 'Error',
+          type: responseTypes.ERROR,
           message: 'Subject invalid',
         });
       } else {
@@ -90,7 +91,7 @@ export const updateUserById = async (req, res) => {
         await User.findByIdAndUpdate(id, editParams);
 
         return res.status(StatusCodes.OK).json({
-          type: 'Success',
+          type: responseTypes.SUCCESS,
           message: 'Success',
         });
       }
@@ -114,7 +115,7 @@ export const updateUserById = async (req, res) => {
     }
   } catch (err) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: err.message,
     });
   }
@@ -149,7 +150,7 @@ export const updateUserPassword = async (req, res) => {
       });
     } else {
       return res.status(StatusCodes.BAD_REQUEST).json({
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'Password not match',
       });
     }
@@ -159,7 +160,7 @@ export const updateUserPassword = async (req, res) => {
     const user = User.findById(id);
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'User not match',
       });
     }
@@ -178,7 +179,7 @@ export const updateUserPassword = async (req, res) => {
     }
   } catch (err) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: err.message,
     });
   }

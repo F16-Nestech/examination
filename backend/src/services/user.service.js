@@ -2,19 +2,20 @@ import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 import User from '../models/user.model.js';
 import { userRoles } from '../config/user.js';
+import responseTypes from '../config/responseType.js';
 
 export const queryAllUsers = async () => {
   try {
     const users = await User.find().select('-password');
     return {
-      type: 'Success',
+      type: responseTypes.SUCCESS,
       message: 'Successful query all users',
       statusCode: StatusCodes.OK,
       users,
     };
   } catch (err) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: err.message,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     };
@@ -27,21 +28,21 @@ export const queryUserById = async (id) => {
 
     if (!user) {
       return {
-        type: 'Error',
-        message: 'user not found',
+        type: responseTypes.ERROR,
+        message: 'User not found',
         statusCode: StatusCodes.NOT_FOUND,
       };
     }
 
     return {
-      type: 'Success',
+      type: responseTypes.SUCCESS,
       message: 'Successful get user',
       statusCode: StatusCodes.OK,
       user,
     };
   } catch (err) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: err.message,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     };
@@ -73,7 +74,7 @@ export const createNewUser = async (body) => {
   // check field required
   if (!username || !name || !password) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: 'fieldsRequired',
       statusCode: StatusCodes.BAD_REQUEST,
     };
@@ -81,7 +82,7 @@ export const createNewUser = async (body) => {
   // check username valid
   if (!isUsernameValid) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: 'username valid error',
       statusCode: StatusCodes.BAD_REQUEST,
     };
@@ -91,7 +92,7 @@ export const createNewUser = async (body) => {
   const isUsernameTaken = await User.isUsernameTaken(username);
   if (isUsernameTaken) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: 'username taken',
       statusCode: StatusCodes.BAD_REQUEST,
     };
@@ -100,7 +101,7 @@ export const createNewUser = async (body) => {
   // check password
   if (!isPasswordValid(password, username)) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: 'Password valid error',
       statusCode: StatusCodes.BAD_REQUEST,
     };
@@ -118,14 +119,14 @@ export const createNewUser = async (body) => {
     await user.save();
 
     return {
-      type: 'Success',
+      type: responseTypes.SUCCESS,
       message: 'Successful create new user',
       statusCode: StatusCodes.CREATED,
       user,
     };
   } catch (err) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: err.message,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
       user,
@@ -138,19 +139,19 @@ export const removeUserById = async (id) => {
     const user = await User.findByIdAndDelete(id);
     if (!user) {
       return {
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'user not found',
         statusCode: StatusCodes.NOT_FOUND,
       };
     }
     return {
-      type: 'Success',
+      type: responseTypes.SUCCESS,
       message: 'Successful delete user',
       statusCode: StatusCodes.OK,
     };
   } catch (err) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: err.message,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     };
@@ -163,19 +164,19 @@ export const changeInfo = async (id, name, subject) => {
     const user = await User.findByIdAndUpdate(id, { name, subject });
     if (!user) {
       return {
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'User not found',
         statusCode: StatusCodes.NOT_FOUND,
       };
     }
     return {
-      type: 'Success',
+      type: responseTypes.SUCCESS,
       message: 'Update user info success',
       statusCode: StatusCodes.OK,
     };
   } catch (err) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: err.message,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     };
@@ -187,14 +188,14 @@ export const changePassword = async (id, password) => {
     const user = await User.findById(id);
     if (!user) {
       return {
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'User not found',
         statusCode: StatusCodes.NOT_FOUND,
       };
     }
     if (!isPasswordValid(password, user.username)) {
       return {
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'Password valid error',
         statusCode: StatusCodes.BAD_REQUEST,
       };
@@ -202,13 +203,13 @@ export const changePassword = async (id, password) => {
     const hashPass = hashUserPassword(password);
     await User.findByIdAndUpdate(id, { password: hashPass });
     return {
-      type: 'Success',
+      type: responseTypes.SUCCESS,
       message: 'Update password success',
       statusCode: StatusCodes.OK,
     };
   } catch (err) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: err.message,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     };
@@ -219,7 +220,7 @@ export const changeRole = async (id, role) => {
   try {
     if (!Object.values(userRoles).includes(role)) {
       return {
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'Role invalid',
         statusCode: StatusCodes.BAD_REQUEST,
       };
@@ -228,19 +229,19 @@ export const changeRole = async (id, role) => {
     const user = await User.findByIdAndUpdate(id, { role });
     if (!user) {
       return {
-        type: 'Error',
+        type: responseTypes.ERROR,
         message: 'User not found',
         statusCode: StatusCodes.NOT_FOUND,
       };
     }
     return {
-      type: 'Success',
+      type: responseTypes.SUCCESS,
       message: 'Change role success',
       statusCode: StatusCodes.OK,
     };
   } catch (err) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       message: err.message,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     };

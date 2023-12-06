@@ -6,6 +6,7 @@ import User from '../models/user.model.js';
 import Token from '../models/token.model.js';
 import config from '../config/config.js';
 import tokenTypes from '../config/token.js';
+import responseTypes from '../config/responseType.js';
 
 export const generateToken = (userId, expires, type) => {
   const payload = {
@@ -91,7 +92,7 @@ const checkPassword = async (user, password) => {
 export const login = async (username, password) => {
   if (!username || !password) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       statusCode: StatusCodes.BAD_REQUEST,
       message: 'Bad request',
     };
@@ -100,7 +101,7 @@ export const login = async (username, password) => {
   const user = await User.findOne({ username }).select('+password');
   if (!user) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       statusCode: StatusCodes.NOT_FOUND,
       message: 'User not found',
     };
@@ -110,7 +111,7 @@ export const login = async (username, password) => {
 
   if (result) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       statusCode: StatusCodes.UNAUTHORIZED,
       message: result,
     };
@@ -121,7 +122,7 @@ export const login = async (username, password) => {
   delete user._doc.password;
 
   return {
-    type: 'Success',
+    type: responseTypes.SUCCESS,
     statusCode: StatusCodes.OK,
     message: 'Login success',
     user,
