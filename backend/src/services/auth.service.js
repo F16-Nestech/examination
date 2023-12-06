@@ -6,6 +6,7 @@ import User from '../models/user.model.js';
 import Token from '../models/token.model.js';
 import config from '../config/config.js';
 import tokenTypes from '../config/token.js';
+import responseTypes from '../config/responseType.js';
 
 export const generateToken = (userId, expires, type) => {
   const payload = {
@@ -64,6 +65,17 @@ export const generateAuthTokens = async (user) => {
   };
 };
 
+export const generateAccessTokens = async (id) => {
+  const accessTokenExpires = moment().add(
+    config.jwt.accessExpirationMinutes,
+    'minutes'
+  );
+
+  const accessToken = generateToken(id, accessTokenExpires, tokenTypes.ACCESS);
+
+  return accessToken;
+};
+
 const checkPassword = async (user, password) => {
   try {
     const result = await bcrypt.compare(password, user.password);
@@ -80,7 +92,7 @@ const checkPassword = async (user, password) => {
 export const login = async (username, password) => {
   if (!username || !password) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       statusCode: StatusCodes.BAD_REQUEST,
       message: 'Bad request',
     };
@@ -89,7 +101,7 @@ export const login = async (username, password) => {
   const user = await User.findOne({ username }).select('+password');
   if (!user) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       statusCode: StatusCodes.NOT_FOUND,
       message: 'User not found',
     };
@@ -99,7 +111,7 @@ export const login = async (username, password) => {
 
   if (result) {
     return {
-      type: 'Error',
+      type: responseTypes.ERROR,
       statusCode: StatusCodes.UNAUTHORIZED,
       message: result,
     };
@@ -107,11 +119,10 @@ export const login = async (username, password) => {
 
   const tokens = await generateAuthTokens(user);
 
-  // user.password = undefined;
   delete user._doc.password;
 
   return {
-    type: 'Success',
+    type: responseTypes.SUCCESS,
     statusCode: StatusCodes.OK,
     message: 'Login success',
     user,
