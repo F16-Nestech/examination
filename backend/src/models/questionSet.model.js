@@ -21,7 +21,11 @@ const QuestionSetSchema = mongoose.Schema(
       type: String,
       maxLength: 255,
     },
-    questions: [mongoose.Types.ObjectId],
+    question_ids: [mongoose.Types.ObjectId],
+    is_deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamp: true,

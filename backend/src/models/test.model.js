@@ -45,11 +45,18 @@ const testSchema = mongoose.Schema(
       type: Number,
       required: [true, 'Please provide test_time_minutes'],
     },
+    test_start_time: {
+      type: Date,
+    },
     max_point: {
       type: Number,
       default: 10,
     },
     questions: [questionWithOrderSchema],
+    is_deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

@@ -33,6 +33,10 @@ const questionSchema = mongoose.Schema(
       type: [Number],
       required: [true, 'Please provide correct answer'],
     },
+    is_deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

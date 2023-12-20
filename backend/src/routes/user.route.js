@@ -1,13 +1,5 @@
 import express from 'express';
-import {
-  getAllUsers,
-  getUserById,
-  createUser,
-  deleteUserById,
-  updateUserById,
-  updateUserRole,
-  updateUserPassword,
-} from '../controllers/user.controller.js';
+import * as userController from '../controllers/user.controller.js';
 import {
   verifyUser,
   verifyTeacherOrAdmin,
@@ -17,13 +9,13 @@ import {
 const userRoute = express.Router();
 
 // API
-userRoute.get('/', verifyUser, getAllUsers);
-userRoute.post('/', verifyTeacherOrAdmin, createUser);
-userRoute.get('/:id', verifyUser, getUserById);
-userRoute.put('/:id', verifyUser, updateUserById);
-userRoute.delete('/:id', verifyAdmin, deleteUserById);
+userRoute.get('/', verifyUser, userController.getAllUsers);
+userRoute.post('/', verifyTeacherOrAdmin, userController.createUser);
+userRoute.get('/:id', verifyUser, userController.getUserById);
+userRoute.put('/:id', verifyUser, userController.updateUserById);
+userRoute.delete('/:id', verifyAdmin, userController.deleteUserById);
 
-userRoute.patch('/:id/role', verifyAdmin, updateUserRole);
-userRoute.patch('/:id/pwd', verifyUser, updateUserPassword);
+userRoute.patch('/:id/role', verifyAdmin, userController.updateUserRole);
+userRoute.patch('/:id/pwd', verifyUser, userController.updateUserPassword);
 
 export default userRoute;

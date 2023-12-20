@@ -19,6 +19,12 @@ export const verifyUser = async (req, res, next) => {
         const user_id = doc.sub;
         const user = await User.findById(user_id);
         if (user) {
+          if (user.is_blocked) {
+            return res.status(StatusCodes.FORBIDDEN).json({
+              type: responseTypes.ERROR,
+              message: 'You have been blocked',
+            });
+          }
           req.user = user;
           next();
         } else {
@@ -68,12 +74,10 @@ export const verifyAdmin = async (req, res, next) => {
     if (req.user.role === userRoles.ADMIN) {
       next();
     } else {
-      res
-        .status(StatusCodes.FORBIDDEN)
-        .json({
-          type: responseTypes.ERROR,
-          message: 'You do not have access right',
-        });
+      res.status(StatusCodes.FORBIDDEN).json({
+        type: responseTypes.ERROR,
+        message: 'You do not have access right',
+      });
     }
   });
 };

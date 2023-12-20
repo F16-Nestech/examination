@@ -54,7 +54,14 @@ const userSchema = mongoose.Schema({
   missed_test_ids: {
     type: [mongoose.Types.ObjectId],
   },
-  is_blocked: Boolean,
+  is_blocked: {
+    type: Boolean,
+    default: false,
+  },
+  is_deleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 userSchema.statics.isUsernameTaken = async function (username) {
