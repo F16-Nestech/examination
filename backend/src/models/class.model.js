@@ -15,10 +15,16 @@ const classSchema = mongoose.Schema({
     type: String,
     required: [true, 'Please provide class_name'],
     maxLength: 15,
+    unique: true,
   },
   grade: {
     type: Number,
     required: [true, 'Please provide grade'],
+    validate(value) {
+      if (value < 0 || value > 13) {
+        throw new Error('grade valid error');
+      }
+    },
   },
   student_ids: {
     type: [mongoose.Types.ObjectId],
@@ -31,6 +37,10 @@ const classSchema = mongoose.Schema({
   notifications: {
     type: [notificationSchema],
     default: [],
+  },
+  is_deleted: {
+    type: Boolean,
+    default: false,
   },
 });
 
