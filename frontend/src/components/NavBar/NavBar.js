@@ -1,30 +1,29 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './NavBar.css';
+import { useState } from "react";
+import { Link } from "react-router-dom";
 const NavBar = () => {
-  const [user, setUSer] = useState(null);
+  const [user, setUSer] = useState({ name: "Tinh", role: "admin" });
   return (
-    <nav className='navbar-container'>
-      <Link to='/' className='navbar-home'>
-        Home
-      </Link>
-      {user ? (
+    <nav className="flex flex-row items-center justify-between gap-6 text-white">
+      {user.role === "admin" ? (
         <>
-          <p className='navbar-user'>
-            Hi,<span> {user}</span>
-          </p>
-          <Link to='/logout' className='navbar-logout'>
-            Log out
-          </Link>
+          <Link to="/">Home</Link>
+          <Link to="/manager/user">Quản lý người dùng</Link>
+          <Link to="/manager/class">Quản lý lớp học</Link>
+          <Link to="/manager/test">Đề kiểm tra</Link>
+          <Link to="/manager/test-set">Bộ câu hỏi</Link>
+        </>
+      ) : user.role === "teacher" ? (
+        <>
+          <Link to="/">Home</Link>
+          <Link to="/manager/user">Quản lý học sinh</Link>
+          <Link to="/manager/class">Quản lý lớp học</Link>
+          <Link to="/manager/test">Đề kiểm tra</Link>
+          <Link to="/manager/test-set">Bộ câu hỏi</Link>
         </>
       ) : (
         <>
-          <Link to='/login' className='navbar-login'>
-            Login
-          </Link>
-          <Link to='/register' className='navbar-register'>
-            Register
-          </Link>
+          <Link to="/">Home</Link>
+          <Link to="/student/test">Đề kiểm tra</Link>
         </>
       )}
     </nav>
