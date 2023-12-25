@@ -24,7 +24,7 @@ export const create = async (Model, req, res) => {
 export const filter = async (Model, req, res) => {
   try {
     if (req.query.filter === undefined || req.query.equal === undefined) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      return res.status(StatusCodes.BAD_REQUEST).json({
         type: responseTypes.ERROR,
         message: 'filter not provided correctly',
       });
@@ -32,7 +32,7 @@ export const filter = async (Model, req, res) => {
     const result = await Model.find({ is_deleted: false })
       .where(req.query.filter)
       .equals(req.query.equal);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    return res.status(StatusCodes.OK).json({
       type: responseTypes.SUCCESS,
       result,
       message:
@@ -49,7 +49,7 @@ export const listAll = async (Model, req, res) => {
   try {
     //  Query the database for a list of all results
     const result = await Model.find({ is_deleted: false });
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    return res.status(StatusCodes.OK).json({
       type: responseTypes.SUCCESS,
       result,
       message: 'Successfully found all documents',
