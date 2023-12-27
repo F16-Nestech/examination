@@ -3,7 +3,7 @@ import logo from "assets/images/logo-school.png";
 
 const Login = () => {
   return (
-    <section className="flex flex-col items-center bg-gray-200 pb-8">
+    <section className="flex flex-col items-center bg-gray-200 pb-8 pt-6">
       <p className="my-6 font-bold md:text-xl">
         Trang kiểm tra Trường Trung học cơ sở An Phú
       </p>
