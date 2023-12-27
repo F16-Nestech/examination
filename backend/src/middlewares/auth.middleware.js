@@ -20,7 +20,7 @@ export const verifyUser = async (req, res, next) => {
         const user = await User.findById(user_id);
         if (user) {
           if (user.is_blocked) {
-            return res.status(StatusCodes.FORBIDDEN).json({
+            return res.status(StatusCodes.UNAUTHORIZED).json({
               type: responseTypes.ERROR,
               message: 'You have been blocked',
             });
@@ -28,19 +28,19 @@ export const verifyUser = async (req, res, next) => {
           req.user = user;
           next();
         } else {
-          return res.status(StatusCodes.FORBIDDEN).json({
+          return res.status(StatusCodes.UNAUTHORIZED).json({
             type: responseTypes.ERROR,
             message: 'User relate with token not found',
           });
         }
       } else {
-        return res.status(StatusCodes.FORBIDDEN).json({
+        return res.status(StatusCodes.UNAUTHORIZED).json({
           type: responseTypes.ERROR,
           message: 'Token is invalid',
         });
       }
     } catch (err) {
-      return res.status(StatusCodes.FORBIDDEN).json({
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         type: responseTypes.ERROR,
         message: err.message,
       });

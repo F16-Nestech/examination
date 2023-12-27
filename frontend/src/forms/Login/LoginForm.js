@@ -27,41 +27,42 @@ const LoginForm = () => {
         };
         setSubmitting(true);
         loginUser(newUser, dispatch, navigate);
+        setTimeout(() => setSubmitting(false), 3000);
       }}
     >
       {({ isSubmitting }) => (
-        <Form className="flex flex-col w-full md:w-1/2 px-12 pt-4 pb-6 rounded-md bg-white max-w-[500px]">
-          <h1 className="text-2xl w-full text-center mb-4">Đăng nhập</h1>
-          <label name="username" className="text-left mt-4">
+        <Form className="flex w-full max-w-[500px] flex-col rounded-md bg-white px-12 pb-6 pt-4 md:w-1/2">
+          <h1 className="mb-4 w-full text-center text-2xl">Đăng nhập</h1>
+          <label name="username" className="mt-4 text-left">
             Username*
           </label>
           <Field
             type="username"
             name="username"
-            className="rounded-md p-2 border-2"
+            className="rounded-md border-2 p-2"
           />
           <ErrorMessage
             name="username"
             component="div"
-            className="text-red-600 text-right w-full"
+            className="w-full text-right text-red-600"
           />
-          <label name="password" className="text-left mt-4">
+          <label name="password" className="mt-4 text-left">
             Password*
           </label>
           <Field
             type="password"
             name="password"
-            className="rounded-md p-2 border-2"
+            className="rounded-md border-2 p-2"
           />
           <ErrorMessage
             name="password"
             component="div"
-            className="text-red-600 text-right w-full"
+            className="w-full text-right text-red-600"
           />
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-6 bg-green-400 p-2 rounded-md"
+            className="mt-6 rounded-md bg-green-400 p-2 text-white"
           >
             Sign in
           </button>
