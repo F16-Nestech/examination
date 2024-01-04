@@ -24,7 +24,7 @@ export const login = async (req, res) => {
   return res.status(statusCode).json({
     type,
     message,
-    user,
+    result: user,
     tokens,
   });
 };

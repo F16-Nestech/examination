@@ -39,12 +39,7 @@ export const getClassById = async (req, res) => {
 };
 
 export const deleteClassById = async (req, res) => {
-  const isHardDelete = req.query.hard_delete;
-  if (isHardDelete) {
-    return await ApiService.hardDelete(Class, req, res);
-  } else {
-    return await ApiService.softDelete(Class, req, res);
-  }
+  await ApiService.remove(Class, req, res);
 };
 
 export const updateClassById = async (req, res) => {

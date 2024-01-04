@@ -42,6 +42,9 @@ const testSlice = createSlice({
       state.test.savedAnswer = null;
       state.test.success = false;
     },
+    changeAnswer: (state, action) => {
+      state.test.userAnswer = action.payload;
+    },
   },
 });
 export const {
@@ -52,5 +55,6 @@ export const {
   syncAnswerStart,
   syncAnswerSuccess,
   syncAnswerFail,
+  changeAnswer,
 } = testSlice.actions;
 export default testSlice.reducer;
