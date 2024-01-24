@@ -1,15 +1,18 @@
 import axios from "axios";
 import * as authAction from "./authSlice";
 import * as userAction from "./userSlice";
+import * as testAction from "./testSlice";
 import request from "requests/request";
+import errorHandler from "requests/errorHandler";
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(authAction.loginStart());
   try {
     const res = await axios.post("/auth/login", user);
-    dispatch(authAction.loginSuccess(res.data.user));
+    dispatch(authAction.loginSuccess(res.data.result));
     navigate("/");
-  } catch {
+  } catch (err) {
+    errorHandler(err);
     dispatch(authAction.loginFailed());
   }
 };
@@ -42,5 +45,15 @@ export const logout = async (dispatch, navigate) => {
     navigate("/login");
   } catch (err) {
     dispatch(authAction.logoutFailed());
+  }
+};
+
+export const getTestInfo = async (dispatch, navigate) => {
+  dispatch(testAction.getTestStart());
+  try {
+    dispatch(testAction.getTestSuccess());
+    navigate("/student/do-test");
+  } catch (err) {
+    dispatch(testAction.getTestError());
   }
 };

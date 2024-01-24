@@ -27,6 +27,7 @@ const LoginForm = () => {
         };
         setSubmitting(true);
         loginUser(newUser, dispatch, navigate);
+        setTimeout(() => setSubmitting(false), 3000);
       }}
     >
       {({ isSubmitting }) => (

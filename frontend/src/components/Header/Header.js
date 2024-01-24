@@ -2,6 +2,7 @@ import logo from "assets/images/logo-school.png";
 import notificationIcon from "assets/images/notification-icon.svg";
 import userIcon from "assets/images/user-icon.svg";
 import barsIcon from "assets/images/bars-icon.svg";
+import logoutIcon from "assets/images/logout.svg";
 import NavBar from "components/NavBar/NavBar";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -54,7 +55,7 @@ const Header = () => {
   }, []);
 
   return user ? (
-    <section className="fixed left-0 top-0 flex h-16 w-full flex-row items-center justify-between bg-gradient-to-b from-cyan-500 to-blue-500 px-8 text-white lg:px-32">
+    <section className="fixed left-0 top-0 z-50 flex h-16 w-full flex-row items-center justify-between bg-gradient-to-b from-cyan-500 to-blue-500 px-8 text-white lg:px-32">
       <div
         className="menu-btn flex w-28 pl-4 lg:hidden"
         onClick={handleClickMenu}
@@ -69,10 +70,14 @@ const Header = () => {
       <NavBar />
 
       {/* User info and notification */}
-      <div className="flex flex-row items-center gap-4">
+      <div className="flex h-full flex-row items-center gap-4">
         <div className="hidden text-yellow-200 lg:flex">{user?.name}</div>
-        <div className="flex h-12 w-12 items-center justify-center">
-          <img src={notificationIcon} alt="notification-icon" />
+        <div className="flex h-full w-12 items-center justify-center">
+          <img
+            src={notificationIcon}
+            alt="notification-icon"
+            className="drop-btn cursor-pointer"
+          />
         </div>
         <div
           className="drop-btn relative flex h-12 w-12 items-center justify-center"
@@ -81,16 +86,20 @@ const Header = () => {
           <img
             src={userIcon}
             alt="user-icon"
-            className="drop-btn items-center"
+            className="drop-btn cursor-pointer"
           />
-          <Link
-            to="/login"
-            onClick={handleLogout}
-            className="absolute mt-16 hidden min-w-[160px] translate-y-1/2 bg-white p-4 text-justify text-black shadow-lg hover:bg-gray-400"
+          <div
+            className="absolute ml-32 mt-16 hidden min-w-[160px] -translate-x-1/2 translate-y-1/2 cursor-pointer bg-white p-4 text-black shadow-lg hover:bg-gray-400"
             id="drop-menu"
           >
-            Logout
-          </Link>
+            <div
+              className="flex items-center justify-between"
+              onClick={handleLogout}
+            >
+              <img src={logoutIcon} alt="logout" />
+              <div>Logout</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import responseTypes from '../config/responseType.js';
+import { userRoles } from '../config/user.js';
 
 export const create = async (Model, req, res) => {
   try {
@@ -61,6 +62,29 @@ export const listAll = async (Model, req, res) => {
     });
   }
 };
+
+export const listAllByOwner = async (Model, req, res, keyId) => {
+  // get all docs created by owner | all questions (admin)
+  const { _id, role } = req.user;
+  if (role === userRoles.ADMIN) {
+    return await listAll(Model, req, res);
+  }
+
+  try {
+    const result = await Model.find({ [keyId]: _id, is_deleted: false });
+    return res.status(StatusCodes.OK).json({
+      type: responseTypes.SUCCESS,
+      result,
+      message: 'Successfully found all documents',
+    });
+  } catch (err) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      type: responseTypes.ERROR,
+      message: err.message,
+    });
+  }
+};
+
 export const paginatedList = async (Model, req, res) => {
   const page = req.query.page || 1;
   const limit = parseInt(req.query.items) || 10;
@@ -114,6 +138,47 @@ export const read = async (Model, req, res) => {
         message: 'We found this document by this id: ' + req.params.id,
       });
     }
+  } catch (err) {
+    // Server Error
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      type: responseTypes.ERROR,
+      message: err.message,
+    });
+  }
+};
+
+export const readByOwner = async (Model, req, res, keyId) => {
+  const { _id, role } = req.user;
+  if (role === userRoles.ADMIN) {
+    return await read(Model, req, res);
+  }
+
+  try {
+    // Find document by id
+    const result = await Model.findOne({
+      _id: req.params.id,
+      is_deleted: false,
+    });
+    // If no results found, return document not found
+    if (!result) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        type: responseTypes.ERROR,
+        message: 'Document not found or deleted',
+      });
+    }
+    // Check owner
+    else if (result[keyId] !== _id) {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        type: responseTypes.ERROR,
+        message: 'You do not have permission',
+      });
+    }
+    // Return success response
+    return res.status(StatusCodes.OK).json({
+      type: responseTypes.SUCCESS,
+      result,
+      message: 'We found this document by this id: ' + req.params.id,
+    });
   } catch (err) {
     // Server Error
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -200,6 +265,47 @@ export const hardDelete = async (Model, req, res) => {
   }
 };
 
+export const remove = async (Model, req, res) => {
+  const isHardDelete = req.query.hard_delete;
+  if (isHardDelete) {
+    return await hardDelete(Model, req, res);
+  } else {
+    return await softDelete(Model, req, res);
+  }
+};
+
+export const removeByOwner = async (Model, req, res, keyId) => {
+  const { _id, role } = req.user;
+  if (role === userRoles.ADMIN) {
+    return await remove(Model, req, res);
+  }
+  try {
+    const isHardDelete = req.query.hard_delete;
+    const filter = isHardDelete
+      ? { _id: req.params.id, is_deleted: true }
+      : { _id: req.params.id, is_deleted: false };
+    const doc = await Model.findOne(filter);
+    if (!doc) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        type: responseTypes.ERROR,
+        message: 'No document found by this request',
+      });
+    }
+    if (doc[keyId] !== _id) {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        type: responseTypes.ERROR,
+        message: 'You do not have permission',
+      });
+    }
+    return await remove(Model, req, res);
+  } catch (err) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      type: responseTypes.ERROR,
+      message: err.message,
+    });
+  }
+};
+
 export const search = async (Model, req, res) => {
   if (req.query.q === undefined || req.query.q.trim() === '') {
     return res.status(StatusCodes.BAD_REQUEST).json({
@@ -229,17 +335,21 @@ export const search = async (Model, req, res) => {
     });
   }
 };
-export const update = async (Model, req, res) => {
+
+export const update = async (Model, req, res, keyId) => {
+  const { _id, role } = req.user;
+
+  const filter =
+    role === userRoles.ADMIN || !keyId
+      ? { _id: req.params.id, is_deleted: false }
+      : { _id: req.params.id, [keyId]: _id, is_deleted: false };
+
   try {
     // Find document by id and updates with the required fields
-    const result = await Model.findOneAndUpdate(
-      { _id: req.params.id, is_deleted: false },
-      req.body,
-      {
-        new: true, // return the new result instead of the old one
-        runValidators: true,
-      }
-    ).exec();
+    const result = await Model.findOneAndUpdate(filter, req.body, {
+      new: true, // return the new result instead of the old one
+      runValidators: true,
+    }).exec();
     if (!result) {
       return res.status(StatusCodes.NOT_FOUND).json({
         type: responseTypes.ERROR,
