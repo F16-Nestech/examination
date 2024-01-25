@@ -8,6 +8,7 @@ import Class from "pages/Teacher/Class/Class";
 import UserManager from "pages/Admin/UserManager/UserManager";
 import Test from "pages/Teacher/Test/Test";
 import QuestionSet from "pages/Teacher/QuestionSet/QuestionSet";
+import TestSearch from "pages/Student/TestSearch/TestSearch";
 
 import { useSelector } from "react-redux";
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/student/do-test" element={<DoTest />} />
+          <Route path="/student/search" element={<TestSearch />} />
           <Route path="/manager/user" element={<UserManager />} />
           <Route path="/manager/class" element={<Class />} />
           <Route path="/manager/test" element={<Test />} />
