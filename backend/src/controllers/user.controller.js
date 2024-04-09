@@ -26,7 +26,7 @@ export const getAllUsers = async (req, res) => {
   return res.status(statusCode).json({
     type,
     message,
-    result,
+    result: users,
   });
 };
 

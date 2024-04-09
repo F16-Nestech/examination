@@ -5,6 +5,8 @@ import {
   generateAccessTokens,
 } from '../services/auth.service.js';
 import Token from '../models/token.model.js';
+import jwt from 'jsonwebtoken';
+import config from '../config/config.js';
 
 export const login = async (req, res) => {
   const { username, password } = req.body;
@@ -50,12 +52,21 @@ export const refreshToken = async (req, res) => {
       });
     }
 
-    const accessToken = generateAccessTokens(doc.user_id);
-    return res.status(StatusCodes.OK).json({
-      type: responseTypes.ERROR,
-      message: 'Generate access token success',
-      accessToken,
-    });
+    const jwtData = jwt.verify(token, config.jwt.secret);
+    if (jwtData) {
+      const user_id = jwtData.sub;
+      const accessToken = await generateAccessTokens(user_id);
+      return res.status(StatusCodes.OK).json({
+        type: responseTypes.SUCCESS,
+        message: 'Generate access token success',
+        accessToken,
+      });
+    } else {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        type: responseTypes.ERROR,
+        message: 'Check jwt error',
+      });
+    }
   } catch (e) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       type: responseTypes.ERROR,
