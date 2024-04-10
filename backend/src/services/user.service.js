@@ -129,7 +129,6 @@ export const createNewUser = async (body) => {
       type: responseTypes.ERROR,
       message: err.message,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-      user,
     };
   }
 };
