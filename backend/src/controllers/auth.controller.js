@@ -45,7 +45,7 @@ export const refreshToken = async (req, res) => {
       });
     }
     if (doc.expires < Date.now()) {
-      Token.deleteOne({ token });
+      await Token.deleteOne({ token });
       return res.status(StatusCodes.FORBIDDEN).json({
         type: responseTypes.ERROR,
         message: 'Refresh token expired',
@@ -67,7 +67,26 @@ export const refreshToken = async (req, res) => {
         message: 'Check jwt error',
       });
     }
-  } catch (e) {
+  } catch (err) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      type: responseTypes.ERROR,
+      message: err.message,
+    });
+  }
+};
+
+export const logout = async (req, res) => {
+  // Get token
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+
+  try {
+    await Token.deleteOne({ token });
+    return res.status(StatusCodes.OK).json({
+      type: responseTypes.SUCCESS,
+      message: 'Logout success',
+    });
+  } catch (err) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       type: responseTypes.ERROR,
       message: err.message,
